@@ -32,21 +32,21 @@
             $stmt->close();
         }
 
-
         //Funcion para actualizar al alumno
-        public function actualizarAlumnoModel($usuario, $tabla){
+        public function actualizarAlumnoModel($alumno, $tabla){
 
             $stmt = Conexion::conectar()->prepare
                 ("UPDATE $tabla SET nombre = :nombre, matricula = :matricula, tutor = :tutor, carrera = :carrera, situacion = :situacion
                 correo = :correo, fotoPerfil = :fotoPerfil WHERE id = :id")
             ;		
-            $stmt->bindParam(':nombre', $usuario['nombre'], PDO::PARAM_STR);
-            $stmt->bindParam(':matricula', $usuario['matricula'], PDO::PARAM_STR);
-            $stmt->bindParam(':tutor', $usuario['tutor'], PDO::PARAM_STR);
-            $stmt->bindParam(':carrera', $usuario['carrera'], PDO::PARAM_STR);
-            $stmt->bindParam(':situacion', $usuario['situacion'], PDO::PARAM_STR);
-            $stmt->bindParam(':correo', $usuario['correo'], PDO::PARAM_STR);
-            $stmt->bindParam(':fotoPerfil', $usuario['fotoPerfil']);
+            $stmt->bindParam(':nombre', $alumno['nombre'], PDO::PARAM_STR);
+            $stmt->bindParam(':matricula', $alumno['matricula'], PDO::PARAM_STR);
+            $stmt->bindParam(':tutor', $alumno['tutor'], PDO::PARAM_STR);
+            $stmt->bindParam(':carrera', $alumno['carrera'], PDO::PARAM_STR);
+            $stmt->bindParam(':situacion', $alumno['situacion'], PDO::PARAM_STR);
+            $stmt->bindParam(':correo', $alumno['correo'], PDO::PARAM_STR);
+            $stmt->bindParam(':fotoPerfil', $alumno['fotoPerfil']);
+            $stmt->bindParam(':id', $alumno['id'], PDO::PARAM_INT);
             
 
             if ($stmt->execute()) 
@@ -57,7 +57,7 @@
             $stmt->close();
         }
 
-        //Funcion para hacer una busqueda por el id del usuario
+        //Funcion para hacer una busqueda por el id del alumno
         public function buscarAlumno($id, $tabla){
 
             $stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla where id = :id");
@@ -68,7 +68,7 @@
             $stmt->close();
         }
 
-        //Funcion para borrar un usuario de la tabla
+        //Funcion para borrar un alumno de la tabla
         public function deleteAlumno($id, $tabla){
 
             $stmt = Conexion::conectar()->prepare("DELETE FROM $tabla where id = :id");

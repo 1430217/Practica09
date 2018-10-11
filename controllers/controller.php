@@ -50,9 +50,9 @@
 
 				//Si el registro es exitoso regresa al formulario si no al index
 				if($stmt == "success")
-					return $stmt;
+					header("location:index.php?action=ok");
 				else 
-					return 'Error al insertar';
+					header("location:index.php");
 			}
 		}
 
@@ -61,7 +61,7 @@
 			$stmt = Datos::getAlumnos('alumnos');
 
 			//For each para recorrer la tabla de los usuarios y poder imprimirlos
-			foreach ($stmt as $usuario => $r) {
+			foreach ($stmt as $alumno => $r) {
 				//Echo para imprimir los datos en la tabla del listado de usuarios
 				echo 
 					'<tr>
@@ -73,8 +73,8 @@
 						<td>'.$r["situacion"].'</td>
 						<td>'.$r["correo"].'</td>
 						<td> <img src= '.$r["fotoPerfil"] .' width="100"></td> 
-						<td><a href="index.php?action=editar&id='.$r["id"].'"><button>Editar</button></a></td>
-						<td><a href="index.php?action=usuarios&id='.$r["id"].'"><button>Borrar</button></a></td>
+						<td><a href="index.php?action=editar&id='.$r["id"].'"><button class="btn btn-warning">Editar</button></a></td>
+						<td><a href="index.php?action=usuarios&id='.$r["id"].'"><button class="btn btn-danger">Borrar</button></a></td>
 					</tr>'
 				;
 			}		
@@ -97,6 +97,96 @@
 				}	
 			}	
 		}	
+
+
+		public function actualizarAlumnoController(){
+
+			if (isset($_POST['id'])) {
+				//En $nombreimagen se guarda el nombre de la imagen
+				$nombreimagen = $_FILES['fotoPerfil']['name'];
+
+				//Recibe los datos
+				$data = $_FILES['fotoPerfil']['tmp_name'];			
+
+				//Ruta donde se van a guardar las imagenes	
+				$ruta = "images";
+
+				//Esto quedará así /imagenes/nombreImagen.jpg
+				$ruta = $ruta."/".$nombreimagen;
+
+				//Mueve la imagen a la carpeta que especificamos en la variable ruta
+				move_uploaded_file($data, $ruta);
+
+				$alumno = array('id' => $_POST['id'],
+							'nombre' => $_POST['nombre'],
+							'matricula' => $_POST['matricula'],
+							'tutor' => $_POST['tutor'],
+							'carrera' => $_POST['carrera'],
+							'situacion' => $_POST['situacion'],
+							'correo' => $_POST['correo'],
+							'fotoPerfil' => $ruta
+				);
+				//Recibe el usuario como un array y el nombre de la tabla
+				$stmt = Datos::actualizarAlumnoModel($alumno, 'alumnos');
+
+				if($stmt == "success")
+					header("Location: index.php?action=cambio");
+				else
+					echo 'Error al actualizar';		
+			}
+		}
+
+		public function buscarAlumnoController(){
+
+			if (isset($_GET['id'])) {
+				$id = $_GET['id'];
+				//Recibe el id del usuario y el nombre de la tabla
+				$stmt = Datos::buscarAlumno($id, 'alumnos');
+
+				//Echo que imprime los datos en el formulario del usuario que se buscó en la base de datos
+				echo '
+					<div class="form-group has-feedback">
+						<input type="text" class="form-control" value="'.$stmt["nombre"].'"" name="nombre" required>
+						<span class="glyphicon glyphicon-user form-control-feedback"></span>
+					</div>
+
+					<div class="form-group has-feedback">
+						<input type="text" class="form-control" value="'.$stmt["matricula"].'" name="matricula" required>
+						<span class="glyphicon glyphicon-user form-control-feedback"></span>
+					</div>
+
+					<div class="form-group has-feedback">
+						<input type="text" class="form-control" value="'.$stmt["tutor"].'" name="tutor" required>
+						<span class="glyphicon glyphicon-user form-control-feedback"></span>
+					</div>
+
+					<div class="form-group has-feedback">
+						<input type="text" class="form-control" value="'.$stmt["carrera"].'" name="carrera" required>
+						<span class="glyphicon glyphicon-tower form-control-feedback"></span>
+					</div>
+
+					<div class="form-group has-feedback">
+						<input type="text" class="form-control" value="'.$stmt["situacion"].'" name="situacion" required>
+						<span class="glyphicon glyphicon-baby-formula form-control-feedback"></span>
+					</div>
+
+					<div class="form-group has-feedback">
+						<input type="email" class="form-control" value="'.$stmt["correo"].'" name="correo" required>
+						<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+					</div>
+
+					<div class="form-group has-feedback">
+						<label for="fotoPerfil">Imagen de perfil</label>
+						<input type="file" class="form-control" value="'.$stmt["fotoPerfil"].'" name="fotoPerfil">
+						<span class="glyphicon glyphicon-file form-control-feedback"></span>
+					</div>
+
+					<div class="col-xs-4">
+						<button type="submit" class="btn btn-primary btn-block btn-flat">Actualizar</button>
+					</div>'
+				;
+			}
+		}
 		
     }
 ?>

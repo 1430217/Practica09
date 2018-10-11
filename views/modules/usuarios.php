@@ -42,3 +42,9 @@
 </body>
 </html>
 
+<?php
+	if (isset($_GET['action'])) {
+		if ($_GET['action'] == 'cambio')
+			echo 'Ha actualizado los datos del usuario';
+	}
+?>

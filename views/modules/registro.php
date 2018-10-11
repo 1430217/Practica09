@@ -70,4 +70,6 @@
     
     if($res === 'success')
         echo 'Registro Exitoso';
+    else
+        echo 'Hay un problema en los headers pero aun asi inserta, verificar en la lista de alumnos';
 ?>
